@@ -1,0 +1,21 @@
+# Generated build and installer output
+bin/
+obj/
+build/
+dist/
+
+# Local tools and IDE settings
+.tools/
+.vs/
+.idea/
+*.user
+*.suo
+
+# Local credentials and logs
+.env
+.env.*
+!.env.example
+*.pfx
+*.p12
+*.key
+*.log

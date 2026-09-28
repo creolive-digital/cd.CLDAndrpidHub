@@ -1,0 +1,134 @@
+<Window x:Class="AndroidHub.MainWindow"
+ xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+ xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+ Icon="{StaticResource CldLogo}" Title="CLD Android Hub · Mission Control" Width="1320" Height="880" MinWidth="980" MinHeight="700"
+ WindowStartupLocation="CenterScreen" Background="{StaticResource BackgroundGradient}">
+ <Window.Resources>
+  <Style x:Key="Card" TargetType="Border"><Setter Property="Background" Value="{StaticResource Panel}"/><Setter Property="BorderBrush" Value="{StaticResource Line}"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="22"/><Setter Property="Padding" Value="22"/></Style>
+  <Style x:Key="Eyebrow" TargetType="TextBlock"><Setter Property="Foreground" Value="{StaticResource Mint}"/><Setter Property="FontSize" Value="11"/><Setter Property="FontWeight" Value="Bold"/><Setter Property="Margin" Value="0,0,0,10"/></Style>
+ </Window.Resources>
+ <Grid ClipToBounds="True">
+  <Grid IsHitTestVisible="False">
+   <Rectangle><Rectangle.Fill><LinearGradientBrush StartPoint="0,0" EndPoint="1,1"><GradientStop Color="#060D1B"/><GradientStop Color="#10182E" Offset="0.55"/><GradientStop Color="#071C2A" Offset="1"/></LinearGradientBrush></Rectangle.Fill></Rectangle>
+   <Ellipse Width="1050" Height="800" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,-350,-250,0"><Ellipse.Fill><RadialGradientBrush><GradientStop Color="#343B83B8"/><GradientStop Color="#003B83B8" Offset="1"/></RadialGradientBrush></Ellipse.Fill></Ellipse>
+   <Ellipse Width="900" Height="700" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="-300,0,0,-300"><Ellipse.Fill><RadialGradientBrush><GradientStop Color="#303DBDCC"/><GradientStop Color="#003DBDCC" Offset="1"/></RadialGradientBrush></Ellipse.Fill></Ellipse>
+   <Rectangle Opacity="0.13"><Rectangle.Fill><DrawingBrush TileMode="Tile" Viewport="0,0,56,56" ViewportUnits="Absolute"><DrawingBrush.Drawing><GeometryDrawing Brush="#8CA4D6" Geometry="M0,0 H1 V1 H0 Z M55,55 H56 V56 H55 Z"/></DrawingBrush.Drawing></DrawingBrush></Rectangle.Fill></Rectangle>
+  </Grid>
+ <Grid Margin="28">
+  <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+  <Grid Margin="0,0,0,24">
+   <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+   <StackPanel Orientation="Horizontal">
+    <Image Source="{StaticResource CldLogo}" Width="56" Height="56" Margin="0,0,16,0"/>
+    <StackPanel><TextBlock Text="CLD Android Hub" FontSize="26" FontWeight="SemiBold"/><TextBlock Text="CONNECTED. LIMITLESS. DESKTOP." Foreground="{StaticResource Mint}" FontSize="10" Margin="1,5,0,0"/></StackPanel>
+   </StackPanel>
+   <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+    <Border Background="#142337" CornerRadius="15" Padding="14,10" Margin="0,0,12,0"><StackPanel Orientation="Horizontal"><Ellipse x:Name="StatusDot" Width="7" Height="7" Fill="{StaticResource Mint}" Margin="0,0,9,0"/><TextBlock x:Name="StatusText" Text="Starting…" FontSize="12"/></StackPanel></Border>
+    <Button x:Name="RefreshButton" Click="RefreshButton_Click" AutomationProperties.Name="Scan devices" ToolTip="Scan devices"><StackPanel Orientation="Horizontal"><TextBlock Text="&#xE72C;" FontFamily="Segoe MDL2 Assets" FontSize="14" VerticalAlignment="Center" Margin="0,0,8,0" Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"/><TextBlock Text="Scan devices" Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"/></StackPanel></Button>
+   </StackPanel>
+  </Grid>
+  <Grid Grid.Row="1">
+   <Grid.ColumnDefinitions><ColumnDefinition Width="340"/><ColumnDefinition Width="20"/><ColumnDefinition/></Grid.ColumnDefinitions>
+   <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Padding="0,0,4,0">
+    <StackPanel>
+     <Border Style="{StaticResource Card}">
+      <StackPanel>
+       <DockPanel><TextBlock Text="01 / DEVICE LINK" Style="{StaticResource Eyebrow}"/><TextBlock x:Name="DeviceCountText" Text="0 READY" FontSize="10" HorizontalAlignment="Right" Foreground="{StaticResource MutedText}"/></DockPanel>
+       <TextBlock x:Name="DeviceNameText" Text="Connect your Android" FontSize="21" FontWeight="SemiBold" Margin="0,3,0,6"/>
+       <TextBlock x:Name="DeviceInfoText" Text="USB or wireless debugging" FontSize="11" Foreground="{StaticResource MutedText}" Margin="0,0,0,16"/>
+       <ComboBox x:Name="DeviceCombo" DisplayMemberPath="Label" SelectionChanged="DeviceCombo_SelectionChanged" ToolTip="Select a connected Android device"/>
+       <TextBlock x:Name="DeviceHintText" Text="Connect USB, enable USB debugging, then scan devices." TextWrapping="Wrap" Foreground="{StaticResource MutedText}" FontSize="12" Margin="0,12,0,0"/>
+       <Expander Header="Connect over Wi-Fi" Margin="0,16,0,0" Foreground="{StaticResource MainText}">
+        <StackPanel x:Name="WirelessPanel" Margin="0,12,0,0">
+         <TextBlock Text="Android 11+: open Developer options → Wireless debugging → Pair with pairing code." TextWrapping="Wrap" Foreground="{StaticResource MutedText}" FontSize="12"/>
+         <TextBlock Text="Pairing address : port" Margin="0,12,0,5" FontSize="12"/>
+         <TextBox x:Name="PairAddress" ToolTip="Pairing address and port from phone"/>
+         <TextBlock Text="Six-digit pairing code" Margin="0,10,0,5" FontSize="12"/>
+         <PasswordBox x:Name="PairCode" MaxLength="6" Padding="10" Background="#0B1220" Foreground="White"/>
+         <Button Tag="pair" Click="WirelessConnect_Click" Margin="0,8,0,14" AutomationProperties.Name="Pair device" ToolTip="Pair device"><StackPanel Orientation="Horizontal"><TextBlock Text="&#xE71B;" FontFamily="Segoe MDL2 Assets" FontSize="14" VerticalAlignment="Center" Margin="0,0,8,0" Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"/><TextBlock Text="Pair device" Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"/></StackPanel></Button>
+         <TextBlock Text="Connection address : port" FontSize="12" Margin="0,0,0,5"/>
+         <TextBox x:Name="WirelessAddress" ToolTip="Connection address and port, different from pairing port"/>
+         <Button Click="WirelessConnect_Click" Margin="0,8,0,0" AutomationProperties.Name="Connect" ToolTip="Connect"><StackPanel Orientation="Horizontal"><TextBlock Text="&#xE701;" FontFamily="Segoe MDL2 Assets" FontSize="14" VerticalAlignment="Center" Margin="0,0,8,0" Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"/><TextBlock Text="Connect" Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"/></StackPanel></Button>
+         <TextBlock Text="Use the connection port on the main Wireless debugging screen after pairing." FontSize="11" Foreground="{StaticResource MutedText}" TextWrapping="Wrap" Margin="0,8,0,0"/>
+        </StackPanel>
+       </Expander>
+      </StackPanel>
+     </Border>
+     <Border Style="{StaticResource Card}" Margin="0,16,0,0">
+      <StackPanel x:Name="ActionsPanel" IsEnabled="False">
+       <TextBlock Text="02 / QUICK ACTIONS" Style="{StaticResource Eyebrow}"/>
+       <UniformGrid Columns="3" Margin="-3,4,-3,10">
+        <Button Tag="4" Click="PhoneKey_Click" Margin="3" AutomationProperties.Name="Back" ToolTip="Back"><StackPanel Orientation="Horizontal"><TextBlock Text="&#xE72B;" FontFamily="Segoe MDL2 Assets" FontSize="14" VerticalAlignment="Center" Margin="0,0,8,0" Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"/><TextBlock Text="Back" Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"/></StackPanel></Button>
+        <Button Tag="3" Click="PhoneKey_Click" Margin="3" AutomationProperties.Name="Home" ToolTip="Home"><StackPanel Orientation="Horizontal"><TextBlock Text="&#xE80F;" FontFamily="Segoe MDL2 Assets" FontSize="14" VerticalAlignment="Center" Margin="0,0,8,0" Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"/><TextBlock Text="Home" Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"/></StackPanel></Button>
+        <Button Tag="187" Click="PhoneKey_Click" Margin="3" AutomationProperties.Name="Apps" ToolTip="Apps"><StackPanel Orientation="Horizontal"><TextBlock Text="&#xE71D;" FontFamily="Segoe MDL2 Assets" FontSize="14" VerticalAlignment="Center" Margin="0,0,8,0" Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"/><TextBlock Text="Apps" Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"/></StackPanel></Button>
+        <Button Tag="25" Click="PhoneKey_Click" Margin="3" AutomationProperties.Name="Vol −" ToolTip="Vol −"><StackPanel Orientation="Horizontal"><TextBlock Text="&#xE993;" FontFamily="Segoe MDL2 Assets" FontSize="14" VerticalAlignment="Center" Margin="0,0,8,0" Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"/><TextBlock Text="Vol −" Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"/></StackPanel></Button>
+        <Button Tag="24" Click="PhoneKey_Click" Margin="3" AutomationProperties.Name="Vol +" ToolTip="Vol +"><StackPanel Orientation="Horizontal"><TextBlock Text="&#xE995;" FontFamily="Segoe MDL2 Assets" FontSize="14" VerticalAlignment="Center" Margin="0,0,8,0" Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"/><TextBlock Text="Vol +" Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"/></StackPanel></Button>
+        <Button Tag="224" Click="PhoneKey_Click" Margin="3" AutomationProperties.Name="Wake" ToolTip="Wake"><StackPanel Orientation="Horizontal"><TextBlock Text="&#xE708;" FontFamily="Segoe MDL2 Assets" FontSize="14" VerticalAlignment="Center" Margin="0,0,8,0" Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"/><TextBlock Text="Wake" Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"/></StackPanel></Button>
+       </UniformGrid>
+       <Button Click="Screenshot_Click" Margin="0,0,0,8" AutomationProperties.Name="Save screenshot" ToolTip="Save screenshot"><StackPanel Orientation="Horizontal"><TextBlock Text="&#xE722;" FontFamily="Segoe MDL2 Assets" FontSize="14" VerticalAlignment="Center" Margin="0,0,8,0" Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"/><TextBlock Text="Save screenshot" Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"/></StackPanel></Button>
+       <Button Click="PushFile_Click" Margin="0,0,0,8" AutomationProperties.Name="Send file" ToolTip="Send file"><StackPanel Orientation="Horizontal"><TextBlock Text="&#xE898;" FontFamily="Segoe MDL2 Assets" FontSize="14" VerticalAlignment="Center" Margin="0,0,8,0" Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"/><TextBlock Text="Send file" Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"/></StackPanel></Button>
+       <Button Click="InstallApk_Click" AutomationProperties.Name="Install APK" ToolTip="Install APK"><StackPanel Orientation="Horizontal"><TextBlock Text="&#xE896;" FontFamily="Segoe MDL2 Assets" FontSize="14" VerticalAlignment="Center" Margin="0,0,8,0" Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"/><TextBlock Text="Install APK" Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"/></StackPanel></Button><Button Tag="223" Click="PhoneKey_Click" Margin="0,8,0,0" AutomationProperties.Name="Lock phone" ToolTip="Lock phone"><StackPanel Orientation="Horizontal"><TextBlock Text="&#xE72E;" FontFamily="Segoe MDL2 Assets" FontSize="14" VerticalAlignment="Center" Margin="0,0,8,0" Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"/><TextBlock Text="Lock phone" Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"/></StackPanel></Button>
+      </StackPanel>
+     </Border>
+     <Border CornerRadius="14" Background="#10252E" Padding="16" Margin="0,16,0,0"><TextBlock Text="For the lowest latency, connect over USB. Wi-Fi Smooth adds a small buffer to reduce network stutter." TextWrapping="Wrap" FontSize="12" Foreground="#A0C6D2"/></Border>
+    </StackPanel>
+   </ScrollViewer>
+   <ScrollViewer Grid.Column="2" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+    <StackPanel>
+     <Border Style="{StaticResource Card}" Padding="28">
+      <Border.Background><LinearGradientBrush StartPoint="0,0" EndPoint="1,1"><GradientStop Color="#E319364A"/><GradientStop Color="#DA232340" Offset="0.65"/><GradientStop Color="#E3142136" Offset="1"/></LinearGradientBrush></Border.Background>
+      <StackPanel>
+       <TextBlock Text="CLD / MIRROR STUDIO" Style="{StaticResource Eyebrow}"/>
+       <TextBlock Text="Your Android.&#x0a;Beyond the screen." FontSize="34" FontWeight="SemiBold" LineHeight="43"/>
+       <TextBlock Text="Stream your Android into a dedicated desktop window.&#x0a;Use your mouse, keyboard, and the whole screen." Foreground="#ACBED3" FontSize="14" Margin="0,14,0,20" TextWrapping="Wrap"/>
+       <WrapPanel><Border Background="#203C4B" CornerRadius="10" Padding="11,6" Margin="0,0,8,8"><TextBlock Text="UP TO 120 FPS" FontSize="10" Foreground="{StaticResource Mint}"/></Border><Border Background="#2A2D50" CornerRadius="10" Padding="11,6" Margin="0,0,8,8"><TextBlock Text="FULLSCREEN" FontSize="10" Foreground="#C6B7FF"/></Border><Border Background="#203C4B" CornerRadius="10" Padding="11,6" Margin="0,0,0,8"><TextBlock Text="AUDIO + CONTROL" FontSize="10" Foreground="{StaticResource Mint}"/></Border></WrapPanel>
+      </StackPanel>
+     </Border>
+     <Border Style="{StaticResource Card}" Margin="0,16,0,0">
+      <StackPanel>
+       <TextBlock Text="03 / STREAM CONTROLS" Style="{StaticResource Eyebrow}"/>
+       <StackPanel x:Name="SettingsPanel">
+        <ComboBox x:Name="QualityCombo" SelectedIndex="0" ToolTip="Quality and frame-rate target">
+         <ComboBoxItem Content="Balanced  ·  1280 px / 60 FPS / 8 Mbps"/>
+         <ComboBoxItem Content="High detail  ·  1920 px / 60 FPS / 12 Mbps"/>
+         <ComboBoxItem Content="Wi-Fi smooth  ·  1024 px / 60 FPS / 4 Mbps"/>
+         <ComboBoxItem Content="High refresh  ·  1920 px / 120 FPS / 16 Mbps"/>
+        </ComboBox>
+        <WrapPanel Margin="0,12,0,0">
+         <CheckBox x:Name="FullscreenCheck" Content="Start fullscreen" IsChecked="True"/>
+         <CheckBox x:Name="AudioCheck" Content="Phone audio" IsChecked="True"/>
+         <CheckBox x:Name="AwakeCheck" Content="Keep awake" IsChecked="True"/>
+         <CheckBox x:Name="TopCheck" Content="Always on top"/>
+         <CheckBox x:Name="ScreenOffCheck" Content="Phone display off"/>
+         <CheckBox x:Name="RecordCheck" Content="Record session"/>
+        </WrapPanel>
+        <TextBlock Text="FPS is a target; actual playback depends on your phone and connection. Audio requires Android 11+; some apps block capture." Foreground="{StaticResource MutedText}" FontSize="11" TextWrapping="Wrap" Margin="0,6,0,16"/>
+       </StackPanel>
+       <WrapPanel>
+        <Button x:Name="StartButton" Foreground="#07141B" Style="{StaticResource PrimaryButton}" Click="StartMirror_Click" IsEnabled="False" Padding="22,13" Margin="0,0,10,6" AutomationProperties.Name="Launch mirror" ToolTip="Launch mirror"><StackPanel Orientation="Horizontal"><TextBlock Text="&#xE768;" FontFamily="Segoe MDL2 Assets" FontSize="14" VerticalAlignment="Center" Margin="0,0,8,0" Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"/><TextBlock Text="Launch mirror" Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"/></StackPanel></Button>
+        <Button x:Name="StopButton" Click="StopMirror_Click" IsEnabled="False" Margin="0,0,10,6" AutomationProperties.Name="Stop" ToolTip="Stop"><StackPanel Orientation="Horizontal"><TextBlock Text="&#xE71A;" FontFamily="Segoe MDL2 Assets" FontSize="14" VerticalAlignment="Center" Margin="0,0,8,0" Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"/><TextBlock Text="Stop" Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"/></StackPanel></Button>
+        <Button x:Name="FocusButton" Click="FocusMirror_Click" IsEnabled="False" Margin="0,0,0,6" AutomationProperties.Name="Show mirror" ToolTip="Show mirror"><StackPanel Orientation="Horizontal"><TextBlock Text="&#xE8A7;" FontFamily="Segoe MDL2 Assets" FontSize="14" VerticalAlignment="Center" Margin="0,0,8,0" Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"/><TextBlock Text="Show mirror" Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"/></StackPanel></Button>
+       </WrapPanel>
+      </StackPanel>
+     </Border>
+     <Border Style="{StaticResource Card}" Margin="0,16,0,0">
+      <Grid>
+       <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+       <StackPanel>
+        <TextBlock x:Name="SessionText" Text="Ready when you are" FontSize="18" FontWeight="SemiBold"/><TextBlock x:Name="StreamStatsText" Text="Stream idle" Foreground="{StaticResource Mint}" FontSize="12" Margin="0,6,0,0"/>
+        <TextBlock Text="IN THE MIRROR WINDOW" Style="{StaticResource Eyebrow}" Margin="0,16,0,8"/>
+        <TextBlock Text="F11   Fullscreen on / off     ·     Alt + Q   Close mirror&#x0a;Alt + ← / →   Rotate view     ·     Alt + V   Paste clipboard&#x0a;Right click   Back     ·     Drag a file   Send to phone" Foreground="{StaticResource MutedText}" FontSize="12" LineHeight="24" TextWrapping="Wrap"/>
+        <Button Click="Log_Click" HorizontalAlignment="Left" Margin="0,12,0,0" AutomationProperties.Name="Session log" ToolTip="Session log"><StackPanel Orientation="Horizontal"><TextBlock Text="&#xE9D9;" FontFamily="Segoe MDL2 Assets" FontSize="14" VerticalAlignment="Center" Margin="0,0,8,0" Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"/><TextBlock Text="Session log" Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"/></StackPanel></Button>
+       </StackPanel>
+       <StackPanel Grid.Column="1" Margin="18,0,0,0" Width="85"><Image x:Name="PreviewImage" Height="120" Stretch="Uniform"/><TextBlock Text="Last saved&#x0a;screenshot" TextAlignment="Center" FontSize="10" Foreground="{StaticResource MutedText}" Margin="0,8,0,0"/></StackPanel>
+      </Grid>
+     </Border>
+    </StackPanel>
+   </ScrollViewer>
+  </Grid>
+  <Border Grid.Row="2" BorderBrush="{StaticResource Line}" BorderThickness="0,1,0,0" Padding="0,14,0,0" Margin="0,18,0,0"><DockPanel><TextBlock Text="CLD ANDROID HUB / 2.1" Foreground="{StaticResource Mint}" FontSize="10" FontWeight="Bold" Margin="0,0,20,0"/><TextBlock x:Name="FooterText" Text="CLD Android Hub · Your phone, beautifully connected." Foreground="{StaticResource MutedText}" FontSize="11" TextTrimming="CharacterEllipsis" ToolTip="{Binding Text, RelativeSource={RelativeSource Self}}"/></DockPanel></Border>
+ </Grid>
+ </Grid>
+</Window>
+
+

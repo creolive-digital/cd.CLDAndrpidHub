@@ -1,0 +1,12 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+ <DrawingImage x:Key="CldLogo">
+  <DrawingImage.Drawing>
+   <DrawingGroup>
+    <GeometryDrawing Brush="#101C33" Geometry="M16,0 H48 Q64,0 64,16 V48 Q64,64 48,64 H16 Q0,64 0,48 V16 Q0,0 16,0 Z"/>
+    <GeometryDrawing Brush="#57E6EF" Geometry="M39,14 H24 L12,26 V39 L24,51 H39 V43 H27 L20,36 V29 L27,22 H39 Z"/>
+    <GeometryDrawing Brush="#AC94FF" Geometry="M44,14 H49 L59,24 V41 L49,51 H44 V43 H46 L51,38 V27 L46,22 H44 Z"/>
+    <GeometryDrawing Brush="#F2FAFF" Geometry="M28,27 H34 V35 H42 V41 H28 Z"/>
+   </DrawingGroup>
+  </DrawingImage.Drawing>
+ </DrawingImage>
+</ResourceDictionary>
